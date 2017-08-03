@@ -1,5 +1,11 @@
 const Sequelize = require('sequelize');
-const db = new Sequelize('postgres://localhost:5432/wikistack');
+const db = new Sequelize(process.env.DATABASE_URL);
+
+// helper
+function convertTitle(title) {
+  // replace space with _ -> replace symbols with '' -> replace multiple _ with single _
+  return title.replace(/\s/g, '_').replace(/\W/g, '').replace(/\_+/g, '_');
+}
 
 var Page = db.define('page', {
   title: {
@@ -22,6 +28,10 @@ var Page = db.define('page', {
     defaultValue: Sequelize.NOW
   }
 });
+
+Page.hook('beforeValidate', (page, options) => {
+  page.urlTitle = convertTitle(page.title);
+})
 
 var User = db.define('user', {
   name: {

@@ -4,12 +4,12 @@ const port = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
 const nunjucks = require('nunjucks');
 const router = require('./routes');
-const models = require('./models/index');
+const models = require('./models');
 
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: false}));
-app.use('/', router);
+app.use(router);
 
 app.set('view engine', 'html');
 app.engine('html', nunjucks.render);
