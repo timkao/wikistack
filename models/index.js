@@ -27,6 +27,12 @@ var Page = db.define('page', {
     type: Sequelize.DATE,
     defaultValue: Sequelize.NOW
   }
+}, {
+  getterMethods: {
+    route() {
+      return `/wiki/${this.getDataValue('urlTitle')}`
+    }
+  }
 });
 
 Page.hook('beforeValidate', (page, options) => {
@@ -46,6 +52,11 @@ var User = db.define('user', {
     }
   }
 });
+
+
+Page.belongsTo(User, { as: 'author' });
+User.hasMany(Page);
+
 
 module.exports = {
   db: db,
