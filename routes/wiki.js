@@ -17,16 +17,19 @@ router.post('/', function(req, res){
     content: req.body.content
   })
 
-  var user = User.build({
-    name: req.body.name,
-    email: req.body.email
-  })
-
-  user.save().then(function() {
-      return page.save;
-    }).then(function(savedPage) {
-      res.redirect(savedPage.route);
+  User.findOrCreate({
+    where: {
+      name: req.body.name
+    }, defaults: {
+      email: req.body.email
+    }
+  }).then(function(result) {
+    return page.save().then(function() {
+      return page.setUser(result[0]);
     });
+  }).then(function(savedPage) {
+    res.redirect(savedPage.route);
+  });
 });
 
 router.get('/add', function(req, res){
@@ -40,7 +43,13 @@ router.get('/:urlTitle', function(req, res, next) {
     }
   }).then(function(page) {
     if (!page) return res.render('addpage');
-    res.render('wikipage', { page })
+    User.findOne({
+      where: {
+        id: page.userId
+      }
+    }).then(function(user) {
+      res.render('wikipage', { page, user });
+    })
   })
 });
 
