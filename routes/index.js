@@ -9,7 +9,7 @@ router.use('/wiki', require('./wiki'))
 router.use('/users', require('./users'))
 
 router.get('/', function(req, res){
-  res.render('index')
+  res.redirect('/wiki')
 })
 
 router.get('/search', function(req, res){

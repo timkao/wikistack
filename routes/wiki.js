@@ -56,5 +56,32 @@ router.get('/:urlTitle', function(req, res, next) {
   .catch(next)
 });
 
+router.get('/:urlTitle/similar', function(req, res){
+
+  Page.findOne({
+    where: {
+      urlTitle: req.params.urlTitle
+    }
+  })
+  .then(function(page){
+    return Page.findAll({
+      where: {
+        tags: {
+          $overlap: page.tags
+        }
+      }
+    })
+  })
+  .then(function(result){
+    var pieces = result.filter(function(ele){
+      if (ele.urlTitle !== req.params.urlTitle) {
+        return true;
+      }
+    })
+    res.render('index', {pages: pieces})
+  })
+
+
+})
 
 module.exports = router;

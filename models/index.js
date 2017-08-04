@@ -38,8 +38,25 @@ var Page = db.define('page', {
     route() {
       return `/wiki/${this.getDataValue('urlTitle')}`
     }
+  },
+  instanceMethods: {
+    findSimilar() {
+      console.log('instance!')
+    }
   }
 });
+
+Page.prototype.findSimilar = function() {
+  console.log('check');
+  // return Page.findAll({
+  //   where: {
+  //     tags: {
+  //       $contains: this.tags
+  //     }
+  //   }
+  // })
+}
+
 
 Page.hook('beforeValidate', (page, options) => {
   page.urlTitle = convertTitle(page.title);
@@ -68,6 +85,9 @@ Page.findByTag = function(str) {
     }
   })
 }
+
+
+
 
 Page.belongsTo(User, {as: 'Author'});
 User.hasMany(Page);
