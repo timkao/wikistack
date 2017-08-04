@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <h3>Searh by Tags</h3>
+  <hr>
+  <form method="GET" action="/search">
+
+    <div class="form-group">
+      <label for="tagsearch" class="col-sm-2 control-label">Tags Search</label>
+      <div class="col-sm-10">
+        <input name="tagsearch" type="textarea" class="form-control" placeholder="{{currentTag}}"/>
+      </div>
+    </div>
+
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary">search</button>
+    </div>
+
+  </form>
+
+  <div id="srcResult">
+    <h3>Search Result</h3>
+    <hr>
+    <ul class="list-unstyled">
+      {% for page in pages %}
+      {% for user in users %}
+        {% if page.AuthorId === user.id %}
+        <h4><a href="/users/{{user.id}}">Author: {{user.name}}</a></h4>
+        {% endif %}
+        <li><a href="/wiki/{{page.urlTitle}}">Article: {{page.title}}</a></li>
+      {% endfor %}
+      {% endfor %}
+    </ul>
+  </div>
+
+{% endblock %}

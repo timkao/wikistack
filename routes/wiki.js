@@ -11,10 +11,15 @@ router.get('/', function(req, res){
     })
 });
 
+
 router.post('/', function(req, res){
+
+  var tagArr = req.body.tags.split(' ');
+
   var page = Page.build({
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    tags: tagArr
   })
 
   User.findOrCreate({
@@ -25,7 +30,7 @@ router.post('/', function(req, res){
     }
   }).then(function(result) {
     return page.save().then(function() {
-      return page.setUser(result[0]);
+      return page.setAuthor(result[0]);
     });
   }).then(function(savedPage) {
     res.redirect(savedPage.route);
@@ -41,16 +46,14 @@ router.get('/:urlTitle', function(req, res, next) {
     where: {
       urlTitle: req.params.urlTitle
     }
-  }).then(function(page) {
+  })
+  .then(function(page) {
     if (!page) return res.render('addpage');
-    User.findOne({
-      where: {
-        id: page.userId
-      }
-    }).then(function(user) {
-      res.render('wikipage', { page, user });
+      page.getAuthor().then(function(user){
+      res.render('wikipage', { page: page, user: user});
     })
   })
+  .catch(next)
 });
 
 

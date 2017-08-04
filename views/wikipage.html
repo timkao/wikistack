@@ -2,10 +2,14 @@
 
 {% block content %}
   <h3>{{page.title}} <small> (<a href="{{page.urlTitle}}/similar">Similar</a>)</small></h3>
-  <h4>by <a href="PLACEHOLDER-AUTHOR-URL">{{user.name}}</a></h4>
-  <div>PLACEHOLDER TAG LIST</div>
+  <h4>by <a href="/users/{{user.id}}">{{user.name}}</a></h4>
+  <div>
+    {% for tag in page.tags %}
+    <a href='/search?tagsearch={{tag}}'>#{{tag}}</a>
+    {% endfor %}
+  </div>
   <hr/>
-  <div>PLACEHOLDER AUTHOR NAME WITH LINK TO AUTHOR PAGE</div>
+  <div><a href="/users/{{user.id}}">{{user.name}}</a></div>
   <div class="page-body">{{page.content}}</div>
   <hr/>
   <a href="{{page.urlTitle}}/edit" class="btn btn-primary">edit this page</a>

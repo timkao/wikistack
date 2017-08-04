@@ -17,6 +17,9 @@ nunjucks.configure('views', {noCache: true});
 
 models.db.sync({force: true, logging: false})
 .then(function(){
+  return models.seed()
+})
+.then(function(){
   app.listen(port, function(){
     console.log(`listening on port ${3000}`);
   })

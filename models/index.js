@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = new Sequelize(process.env.DATABASE_URL);
+const Promise = require('bluebird');
 
 // helper
 function convertTitle(title) {
@@ -23,6 +24,11 @@ var Page = db.define('page', {
   status: {
     type: Sequelize.ENUM('open', 'closed')
   },
+
+  tags: {
+    type: Sequelize.ARRAY(Sequelize.TEXT)
+  },
+
   date: {
     type: Sequelize.DATE,
     defaultValue: Sequelize.NOW
@@ -53,13 +59,43 @@ var User = db.define('user', {
   }
 });
 
+Page.findByTag = function(str) {
+  return this.findAll({
+    where: {
+      tags: {
+        $overlap: [str]
+      }
+    }
+  })
+}
 
-Page.belongsTo(User);
+Page.belongsTo(User, {as: 'Author'});
 User.hasMany(Page);
 
+function seed() {
+  // how to seed a lots of data at one time??
+  var page = Page.create({
+    title: 'Example One',
+    content: 'We do what we do.',
+    status: 'open',
+    tags: ['perfect', 'handsome', 'nice']
+  })
+
+  var user = User.create({
+    name: 'Tim Kao',
+    email: 'tim.kao@iese.net'
+  })
+
+ return Promise.all([page, user])
+  .then(function(result){
+    result[0].setAuthor(result[1])
+  })
+
+}
 
 module.exports = {
   db: db,
   Page: Page,
-  User: User
+  User: User,
+  seed: seed
 };

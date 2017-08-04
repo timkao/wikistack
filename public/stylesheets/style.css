@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+#srcResult {
+  padding-left: 20em;
+  margin-top: 10em;
+}
