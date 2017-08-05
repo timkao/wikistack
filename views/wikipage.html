@@ -10,7 +10,9 @@
   </div>
   <hr/>
   <div><a href="/users/{{user.id}}">{{user.name}}</a></div>
-  <div class="page-body">{{page.content}}</div>
+  {% autoescape false %}
+  <div class="page-body">{{ page.renderedContent }}</div>
+  {% endautoescape %}
   <hr/>
   <a href="{{page.urlTitle}}/edit" class="btn btn-primary">edit this page</a>
   <a href="{{page.urlTitle}}/delete" class="btn btn-danger">delete this page</a>

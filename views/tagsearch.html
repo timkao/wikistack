@@ -27,8 +27,9 @@
         {% if page.AuthorId === user.id %}
         <h4><a href="/users/{{user.id}}">Author: {{user.name}}</a></h4>
         {% endif %}
-        <li><a href="/wiki/{{page.urlTitle}}">Article: {{page.title}}</a></li>
       {% endfor %}
+        <li><a href="/wiki/{{page.urlTitle}}">Article: {{page.title}}</a></li>
+
       {% endfor %}
     </ul>
   </div>

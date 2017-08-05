@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const db = new Sequelize(process.env.DATABASE_URL);
 const Promise = require('bluebird');
+const marked = require('marked');
 
 // helper
 function convertTitle(title) {
@@ -37,24 +38,29 @@ var Page = db.define('page', {
   getterMethods: {
     route() {
       return `/wiki/${this.getDataValue('urlTitle')}`
-    }
-  },
-  instanceMethods: {
-    findSimilar() {
-      console.log('instance!')
+    },
+    renderedContent() {
+      var regex = /\[{2}(.*?)\]{2}/g
+      str = this.content.replace(regex, function(match, selector){
+        return `<a href="${selector}">${selector}</a>`
+      })
+      return str;
     }
   }
 });
 
 Page.prototype.findSimilar = function() {
-  console.log('check');
-  // return Page.findAll({
-  //   where: {
-  //     tags: {
-  //       $contains: this.tags
-  //     }
-  //   }
-  // })
+
+  return Page.findAll({
+    where: {
+      tags: {
+        $overlap: this.tags
+      },
+      id: {
+        $ne: this.id
+      }
+    }
+  })
 }
 
 
@@ -87,8 +93,6 @@ Page.findByTag = function(str) {
 }
 
 
-
-
 Page.belongsTo(User, {as: 'Author'});
 User.hasMany(Page);
 
@@ -96,7 +100,7 @@ function seed() {
   // how to seed a lots of data at one time??
   var page = Page.create({
     title: 'Example One',
-    content: 'We do what we do.',
+    content: '### We do what we do.',
     status: 'open',
     tags: ['perfect', 'handsome', 'nice']
   })
